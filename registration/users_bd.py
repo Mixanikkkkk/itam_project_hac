@@ -3,8 +3,9 @@ from sqlalchemy import Column, Text
 from sqlalchemy import MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
+from sqlalchemy.orm import sessionmaker, relationship
+from teams.team_bd import Teams
+from teams.team_member_bd import TeamMember
 
 engine = create_engine('mysql://root:password@localhost/link_service', echo=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -32,5 +33,9 @@ class Users(Base):
     last_name = Column(Text, nullable=False)
     password = Column(Text, nullable=False)
     email = Column(Text, nullable=False)
+    bio = Column(Text, nullable=True)
+
+    owner = relationship("Teams", back_populates="teams")
+    memberships = relationship("TeamMember", back_populates="member")
 
 
