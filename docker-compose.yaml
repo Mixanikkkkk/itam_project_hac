@@ -1,7 +1,7 @@
 services:
 
   backend:
-    enviroment:
+    environment:
       APP_UVICORN: '{"host": "0.0.0.0", "port": 8000}'
       APP_PG: '{"host": "postgres"}'
       APP_REDIS: '{"host": "redis"}'
@@ -9,10 +9,10 @@ services:
       context: .
       dockerfile: Dockerfile
     depends_on:
-      -mysql
-      -redis
+      - mysql
+      - redis
     ports:
-      -8000:8000
+      - "8000:8000"
 
   mysql:
     image: mysql
