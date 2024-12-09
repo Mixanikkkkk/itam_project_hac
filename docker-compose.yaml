@@ -9,10 +9,10 @@ services:
       context: .
       dockerfile: Dockerfile
     depends_on:
-      -mysql
-      -redis
+      - mysql
+      - redis
     ports:
-      -8000:8000
+      - 8000:8000
 
   mysql:
     image: mysql
@@ -23,9 +23,8 @@ services:
       MYSQL_PASSWORD: NewPassword123!
     ports:
       - "3306:3306"
-    volumes:
-      - db_data:/var/lib/mysql
-          -
+
+
   redis:
     image: redis:7.2.3-bookworm
     restart: always
@@ -48,3 +47,4 @@ services:
         limits:
           cpus: '0.50'
           memory: 1000M
+
