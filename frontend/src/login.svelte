@@ -12,7 +12,7 @@
     <div class="page">
         <body>
             <div class="container">
-                <h1>Авторизируйтесь!!!!:</h1>
+                <h1>Авторизируйтесь:</h1>
                 <form id="authForm">
                     <div class="form-group">
                         <input type="text" id="username" name="username" placeholder="Логин" required>
