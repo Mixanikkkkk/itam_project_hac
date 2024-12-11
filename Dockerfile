@@ -1,8 +1,8 @@
 
 FROM python:3.12-slim
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-
-RUN sudo apt-get update && apt-get install -y python3-dev
+RUN apt-get update && apt-get install -y python3-dev
 
 
 WORKDIR /app
