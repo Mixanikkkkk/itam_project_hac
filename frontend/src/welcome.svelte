@@ -13,7 +13,7 @@
         <body>
             <div class="container">
                 <div class="text-block">
-                    <h1>Добро пожаловать!</h1>
+                    <h1>!!!Добро пожаловать!</h1>
                     <p>Здесь вы можете создать учетную запись или войти в уже существующую.</p>
                 </div>
                 <div class="button-group">
