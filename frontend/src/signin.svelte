@@ -3,9 +3,39 @@
     import gsap from 'gsap';
     import { Link } from 'svelte-routing';
 
+    let username = '';
+    let password = '';
+    let confirmPassword = '';
+    let errorMessage = '';
+
     onMount(() => {
         gsap.from(".page", { duration: 1.7, opacity: 1, y: -10 });
     });
+
+    async function submitForm(event) {
+        event.preventDefault();
+
+        if (password !== confirmPassword) {
+            errorMessage = "Пароли не совпадают.";
+            return;
+        }
+
+        const response = await fetch('http://team4.itatmisis.ru:8000/docs#/default/register_user_register_post', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+        });
+
+        if (response.ok) {
+            const jsonResponse = await response.json();
+            console.log('Успех:', jsonResponse);
+        } else {
+            errorMessage = 'Ошибка регистрации. Попробуйте снова.';
+            console.error('Ошибка:', response.statusText);
+        }
+    }
 </script>
 
 <main>
@@ -13,24 +43,25 @@
         <body>
             <div class="container">
                 <h1>Зарегистрируйтесь:</h1>
-                <form id="authForm">
+                <form on:submit={submitForm}>
                     <div class="form-group">
-                        <input type="text" id="username" name="username" placeholder="Логин" required>
+                        <input type="text" bind:value={username} placeholder="Логин" required />
                     </div>
-
+    
                     <div class="form-group">
-                        <input type="password" id="password" name="password" placeholder="Пароль" required>
+                        <input type="password" bind:value={password} placeholder="Пароль" required />
                     </div>
-
+    
                     <div class="form-group">
-                        <input type="password" id="password" name="password" placeholder="Повторите пароль" required>
+                        <input type="password" bind:value={confirmPassword} placeholder="Повторите пароль" required />
                     </div>
-
                     <Link to="/form">
-                        <button type="submit" class="btn">Отправить</button>
+                    <button type="submit" class="btn">Отправить</button>
                     </Link>
-
-                    <div id="error-message" class="error"></div>
+    
+                    {#if errorMessage}
+                        <div class="error">{errorMessage}</div>
+                    {/if}
                 </form>
             </div>
         </body>
@@ -50,12 +81,12 @@
     }
 
     .container {
-		width: 480px;
-		height: 369px;
-		background-color: #2a2a2a;
-		text-align: center;
-		border-radius: 9px;
-		padding: 40px;
+        width: 480px;
+        height: 369px;
+        background-color: #2a2a2a;
+        text-align: center;
+        border-radius: 9px;
+        padding: 40px;
     }
 
     h1 {

@@ -2,10 +2,38 @@
     import { onMount } from 'svelte';
     import gsap from 'gsap';
     import { Link } from 'svelte-routing';
+    
+    let username = '';
+    let tg = '';
+    let role = 'uxui';
+    let about = '';
+    let responseData = null;
+    let errorMessage = '';
 
     onMount(() => {
         gsap.from(".page", { duration: 1.7, opacity: 1, y: -10 });
     });
+
+    async function submitForm(event) {
+        event.preventDefault();
+
+        const url = `http://team4.itatmisis.ru:8000/docs#/default/get_user_profile_profile__username__get?username=${encodeURIComponent(username)}&tg=${encodeURIComponent(tg)}&role=${encodeURIComponent(role)}&about=${encodeURIComponent(about)}`;
+
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+            });
+
+            if (response.ok) {
+                responseData = await response.json();
+                console.log('Ответ сервера:', responseData);
+            } else {
+                errorMessage = 'Ошибка получения данных';
+            }
+        } catch (error) {
+            errorMessage = 'Произошла ошибка: ' + error.message;
+        }
+    }
 </script>
 
 <main>
@@ -13,25 +41,64 @@
         <body>
             <div class="registration-form">
                 <h1>Заполни анкету и расскажи о себе!</h1>
-                <form>
-                    <input type="text" id="username" name="username" placeholder="ФИО" required>
-        
-                    <input type="tg" id="tg" name="tg" placeholder="@Telegram" required>
-        
-                    <select id="role" name="role" placeholder="Выберите вашу роль:">
+                <form on:submit={submitForm}>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        placeholder="ФИО" 
+                        bind:value={username} 
+                        required
+                    >
+            
+                    <input 
+                        type="text" 
+                        id="tg" 
+                        name="tg" 
+                        placeholder="@Telegram" 
+                        bind:value={tg} 
+                        required
+                    >
+            
+                    <select 
+                        id="role" 
+                        name="role" 
+                        bind:value={role}
+                    >
                         <option value="uxui">UX/UI</option>
                         <option value="backend">Backend</option>
                         <option value="frontend">Frontend</option>
                         <option value="manager">Manager</option>
                     </select>
-        
-                    <textarea id="about" name="about" placeholder="Дополнительная информация" rows="11" required></textarea>
+            
+                    <textarea 
+                        id="about" 
+                        name="about" 
+                        placeholder="Дополнительная информация" 
+                        rows="11"
+                        bind:value={about} 
+                        required
+                    ></textarea>
                     
-                    <!-- svelte-ignore missing-declaration -->
-                    <Link to="/myteams">
-                        <button type="submit">Отправить</button>
-                    </Link>
+                    <button type="submit">Отправить</button>
                 </form>
+                
+                {#if responseData}
+                    <div>
+                        <h2>Полученные данные:</h2>
+                        <pre>{JSON.stringify(responseData, null, 2)}</pre>
+                    </div>
+                {/if}
+                
+                {#if errorMessage}
+                    <div style="color: red;">
+                        <p>{errorMessage}</p>
+                    </div>
+                {/if}
+    
+                <Link to="/myteams">
+                    <button>Перейти к командам</button>
+                </Link>
             </div>
         </body>
     </div>
@@ -69,7 +136,6 @@
     }
 
     input[type="text"],
-    input[type="tg"],
     select,
     textarea {
         width: 100%;
@@ -93,5 +159,12 @@
         cursor: pointer;
         font-size: 20px;
         font-weight: 700;
+    }
+
+    pre {
+        background: #333;
+        border-radius: 8px;
+        padding: 10px;
+        color: #fff;
     }
 </style>
